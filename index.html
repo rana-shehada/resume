@@ -152,6 +152,28 @@ nav .wrap{display:flex;align-items:center;gap:22px;height:66px}
 footer{padding:30px 0 50px;color:var(--ink2);font-size:.9rem}
 footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
 
+
+/* ask */
+.ask .box{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:34px 24px}
+@media(min-width:900px){.ask .box{padding:44px}}
+.ask .search{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:999px;padding:6px 8px 6px 18px;background:var(--bg)}
+.ask .search:focus-within{border-color:var(--accent)}
+.ask input{flex:1;border:0;background:transparent;color:var(--ink);font:inherit;font-size:1.05rem;outline:0;min-width:0}
+.ask .chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink2);border-radius:999px;padding:6px 13px;font:inherit;font-size:.85rem;cursor:pointer}
+.chip.on,.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--soft)}
+.ask .count{color:var(--ink2);font-size:.9rem;margin:10px 0 6px}
+.qa{border-top:1px solid var(--line)}
+.qa summary{cursor:pointer;list-style:none;padding:16px 0;font-family:Fraunces,serif;font-size:1.2rem;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";color:var(--accent);font-size:1.4rem;flex:none}
+.qa[open] summary::after{content:"\2212"}
+.qa .a{padding:0 0 18px;color:var(--ink2);white-space:pre-line;max-width:70ch}
+.qa .g{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:6px}
+.ask .none{padding:22px 0;color:var(--ink2)}
+.fab{position:fixed;right:18px;bottom:18px;z-index:40;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:13px 20px;font:inherit;font-weight:600;box-shadow:var(--shadow);cursor:pointer}
+.fab:hover{background:var(--accent2)}
+
 /* reveal */
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
@@ -165,7 +187,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
   <div class="wrap">
     <a class="brand" href="#top"><i></i>Rana Shehada</a>
     <div class="links">
-      <a href="#work">Programs</a><a href="#approach">Approach</a><a href="#experience">Experience</a><a href="#education">Education</a><a href="#media">Media</a><a href="#contact">Contact</a>
+      <a href="#work">Programs</a><a href="#approach">Approach</a><a href="#experience">Experience</a><a href="#education">Education</a><a href="#media">Media</a><a href="#ask">Ask Rana</a><a href="#contact">Contact</a>
     </div>
     <div class="navbtns">
       <button class="btn small ghost" id="theme" type="button" aria-label="Switch colour theme">Dark</button>
@@ -393,6 +415,21 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
   </div>
 </section>
 
+<section class="ask" id="ask">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div><div class="eyebrow">Ask Rana</div><h2>Questions people ask me</h2></div>
+      <p class="lede">Answers I wrote in advance. Type a question or pick a topic; nothing here is generated, and if your question is missing, e-mail me.</p>
+    </div>
+    <div class="box reveal">
+      <label class="search"><span class="sr">Ask a question</span><input id="askq" type="search" placeholder="Try: do you facilitate in Arabic? what do you charge? how do you measure results?" autocomplete="off"><button class="btn small primary" type="button" id="askgo">Ask</button></label>
+      <div class="chips" id="askchips" role="group" aria-label="Topics"></div>
+      <div class="count" id="askcount"></div>
+      <div id="asklist"></div>
+    </div>
+  </div>
+</section>
+
 <section class="contact" id="contact">
   <div class="wrap">
     <div class="box reveal">
@@ -408,6 +445,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
     </div>
   </div>
 </section>
+
+<button class="fab" type="button" id="askfab">Ask Rana</button>
 
 <footer>
   <div class="wrap">
@@ -429,6 +468,31 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
     var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.08});
     els.forEach(function(el){io.observe(el);});
   } else { els.forEach(function(el){el.classList.add('in');}); }
+})();
+</script>
+<script src="ask-rana.js"></script>
+<script>
+(function(){
+  var data=window.ASK_RANA||[], q=document.getElementById('askq'), list=document.getElementById('asklist'), chips=document.getElementById('askchips'), count=document.getElementById('askcount');
+  var groups=[]; data.forEach(function(e){if(groups.indexOf(e.g)<0)groups.push(e.g);});
+  var active='';
+  function words(t){return (t||'').toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\s]/g,' ').split(/\s+/).filter(function(w){return w.length>1&&['the','and','you','your','are','for','with','how','what','can','does','did','have','about','that','this','she','her','rana'].indexOf(w)<0;});}
+  function score(e,ws){var hay=(e.q+' '+e.tags.join(' ')+' '+e.a).toLowerCase(), s=0; ws.forEach(function(w){ if(e.q.toLowerCase().indexOf(w)>=0) s+=3; if(e.tags.join(' ').toLowerCase().indexOf(w)>=0) s+=2; else if(hay.indexOf(w)>=0) s+=1;}); return s;}
+  function render(){
+    var ws=words(q.value), rows=data.slice();
+    if(active) rows=rows.filter(function(e){return e.g===active;});
+    if(ws.length){rows=rows.map(function(e){return [score(e,ws),e];}).filter(function(x){return x[0]>0;}).sort(function(a,b){return b[0]-a[0];}).map(function(x){return x[1];});}
+    count.textContent=rows.length? rows.length+(rows.length===1?' answer':' answers')+(ws.length?' for "'+q.value.trim()+'"':'') : '';
+    if(!rows.length){list.innerHTML='<div class="none">Nothing matches that yet. <a href="mailto:rana.shehada@gmail.com?subject='+encodeURIComponent('Question from your profile page: '+q.value.trim())+'">E-mail me the question</a> and I will answer.</div>';return;}
+    list.innerHTML=rows.map(function(e,i){return '<details class="qa"'+((ws.length&&i===0)?' open':'')+'><summary>'+esc(e.q)+'</summary><div class="a"><div class="g">'+esc(e.g)+'</div>'+esc(e.a)+'</div></details>';}).join('');
+  }
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  chips.innerHTML='<button class="chip on" type="button" data-g="">All</button>'+groups.map(function(g){return '<button class="chip" type="button" data-g="'+esc(g)+'">'+esc(g)+'</button>';}).join('');
+  chips.addEventListener('click',function(ev){var b=ev.target.closest('.chip'); if(!b)return; active=b.getAttribute('data-g'); Array.prototype.forEach.call(chips.children,function(c){c.classList.toggle('on',c===b);}); render();});
+  q.addEventListener('input',render); document.getElementById('askgo').addEventListener('click',render);
+  q.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();render();}});
+  document.getElementById('askfab').addEventListener('click',function(){document.getElementById('ask').scrollIntoView({behavior:'smooth'}); setTimeout(function(){q.focus();},500);});
+  render();
 })();
 </script>
 </body>
