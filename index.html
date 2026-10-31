@@ -59,13 +59,13 @@ nav .wrap{display:flex;align-items:center;gap:22px;height:66px}
 /* hero */
 .hero{padding:70px 0 80px;overflow:hidden}
 .hero .wrap{display:grid;gap:48px;align-items:center}
-@media(min-width:900px){.hero .wrap{grid-template-columns:1.15fr .85fr}}
-.hero h1{font-size:clamp(2.5rem,6vw,4.6rem);margin:18px 0 22px;font-weight:500}
+@media(min-width:900px){.hero .wrap{grid-template-columns:1.15fr .85fr;align-items:start}.portrait{justify-self:end;margin-top:10px}}
+.hero h1{font-size:clamp(2.4rem,5.2vw,4rem);margin:18px 0 22px;font-weight:500}
 .hero h1 em{font-style:italic;font-weight:300;color:var(--accent)}
 .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 26px}
 .meta{display:flex;flex-wrap:wrap;gap:8px 22px;color:var(--ink2);font-size:.95rem}
 .meta a{color:var(--ink);text-decoration-color:var(--line);text-underline-offset:4px}
-.portrait{position:relative;justify-self:center;width:min(100%,400px);aspect-ratio:1}
+.portrait{position:relative;justify-self:center;width:min(100%,470px);aspect-ratio:1}
 .portrait img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;box-shadow:var(--shadow);position:relative;z-index:2}
 .portrait .ring{position:absolute;inset:-18px auto auto -18px;width:106%;height:106%;aspect-ratio:1;border-radius:50%;border:1.5px dashed var(--gold);opacity:.7;z-index:1;animation:spin 60s linear infinite}
 .portrait .blob{position:absolute;left:-40px;bottom:-30px;width:72%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 30% 30%,var(--soft),transparent 70%);z-index:0}
@@ -148,9 +148,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
 
 
 /* ask panel */
-.fab{position:fixed;right:18px;bottom:18px;z-index:60;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:13px 20px;font:inherit;font-weight:600;box-shadow:var(--shadow);cursor:pointer;transition:transform .2s}
+.fab{position:fixed;right:20px;bottom:20px;z-index:60;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:13px 20px;font:inherit;font-weight:600;box-shadow:var(--shadow);cursor:pointer;transition:transform .2s}
 .fab:hover{transform:translateY(-2px)}
-.askp{display:none;position:fixed;z-index:70;right:18px;bottom:84px;width:min(440px,calc(100vw - 36px));height:min(640px,calc(100vh - 110px));background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 80px -20px rgba(0,0,0,.55);flex-direction:column;overflow:hidden}
+.askp{display:none;position:fixed;z-index:70;right:20px;bottom:84px;width:min(460px,calc(100vw - 40px));height:min(640px,calc(100vh - 110px));background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 80px -20px rgba(0,0,0,.55);flex-direction:column;overflow:hidden}
 .askp.open{display:flex;animation:pop .2s ease}
 @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
 @media(max-width:600px){.askp{right:0;left:0;bottom:0;width:100%;height:88vh;border-radius:22px 22px 0 0}}
@@ -220,7 +220,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
     <div class="portrait reveal">
       <div class="ring" aria-hidden="true"></div>
       <div class="blob" aria-hidden="true"></div>
-      <img src="rana-linkedin.jpg" alt="Portrait of Rana Shehada" width="420" height="420">
+      <img src="rana-linkedin.jpg" alt="Portrait of Rana Shehada" width="800" height="800">
       <div class="badge ar" aria-hidden="true">عربي · English</div>
       <div class="badge"><b>12+</b>years designing and running programs</div>
     </div>
@@ -468,36 +468,42 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
 <script src="ask-rana.js"></script>
 <script>
 (function(){
-  var data=window.ASK_RANA||[], panel=document.getElementById('askp'), fab=document.getElementById('askfab'), q=document.getElementById('askq'), list=document.getElementById('asklist'), chips=document.getElementById('askchips');
-  var groups=[]; data.forEach(function(e){if(groups.indexOf(e.g)<0)groups.push(e.g);});
-  var active='';
-  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  function words(t){return (t||'').toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\s]/g,' ').split(/\s+/).filter(function(w){return w.length>1&&['the','and','you','your','are','for','with','how','what','can','does','did','have','about','that','this','she','her','rana','do'].indexOf(w)<0;});}
-  function score(e,ws){var tags=e.tags.join(' ').toLowerCase(), hay=(e.q+' '+e.a).toLowerCase(), s=0; ws.forEach(function(w){ if(e.q.toLowerCase().indexOf(w)>=0) s+=3; if(tags.indexOf(w)>=0) s+=2; else if(hay.indexOf(w)>=0) s+=1;}); return s;}
+  var all=(window.ASK_RANA||[]).slice();
+  var order=['Who I am','Learning design','Facilitation','Program management','Evaluation','Working together','Media and public work','About this page'];
+  all.sort(function(a,b){ return order.indexOf(a.g)-order.indexOf(b.g); });
+  var el=function(id){return document.getElementById(id)}, panel=el('askp'), list=el('asklist'), groups=el('askchips'), input=el('askq'), fab=el('askfab');
+  var active='All';
+  var STOP={a:1,an:1,the:1,is:1,are:1,do:1,does:1,did:1,you:1,your:1,i:1,me:1,my:1,of:1,to:1,in:1,on:1,at:1,for:1,and:1,or:1,with:1,about:1,what:1,which:1,who:1,how:1,why:1,when:1,where:1,can:1,have:1,has:1,tell:1,any:1,it:1,this:1,that:1,be:1,more:1,please:1,know:1,ever:1,she:1,her:1,rana:1};
+  function stem(w){ return w.replace(/(ing|ed|es|s)$/,''); }
+  function words(s){ return (s.toLowerCase().match(/[a-z0-9\u0600-\u06FF+#]+/g)||[]).filter(function(w){ return !STOP[w] && w.length>1; }).map(stem); }
+  all.forEach(function(e){ e.tw=words(e.tags.join(' ')); e.hay=words(e.q+' '+e.a); });
+  function score(e,q){ var qw=words(q), s=0; qw.forEach(function(w){ if(e.tw.indexOf(w)>-1) s+=4; else if(e.hay.indexOf(w)>-1) s+=2; }); return s; }
   function render(){
-    var ws=words(q.value), rows=data.slice(), html='';
-    if(active) rows=rows.filter(function(e){return e.g===active;});
-    if(ws.length){rows=rows.map(function(e){return [score(e,ws),e];}).filter(function(x){return x[0]>0;}).sort(function(a,b){return b[0]-a[0];}).map(function(x){return x[1];});}
-    if(!rows.length){list.innerHTML='<div class="empty">Nothing matches that yet. <a href="mailto:rana.shehada@gmail.com?subject='+encodeURIComponent('Question from your profile page: '+q.value.trim())+'">E-mail me the question</a> and I will answer.</div>';return;}
+    var q=input.value.trim(); list.innerHTML='';
+    var items=all.filter(function(e){ return active==='All' || e.g===active; });
+    if(q){ items=items.map(function(e){ return {e:e,s:score(e,q)}; }).filter(function(x){ return x.s>0; }).sort(function(a,b){ return b.s-a.s; }).map(function(x){ return x.e; }); }
+    if(!items.length){ list.innerHTML='<div class="empty">Nothing prepared on that. <a href="mailto:rana.shehada@gmail.com?subject=Question%20from%20your%20profile%20page">E-mail me</a> and I will answer in person.</div>'; return; }
     var lastG=null;
-    rows.forEach(function(e,i){
-      if(!ws.length && e.g!==lastG){html+='<h6>'+esc(e.g)+'</h6>';lastG=e.g;}
-      html+='<details class="qa"'+((ws.length&&i===0)?' open':'')+'><summary>'+esc(e.q)+'</summary><div class="a">'+esc(e.a)+'</div></details>';
+    items.forEach(function(e,i){
+      if(!q && active==='All' && e.g!==lastG){ lastG=e.g; var hh=document.createElement('h6'); hh.textContent=e.g; list.appendChild(hh); }
+      var d=document.createElement('details'); d.className='qa'; if(q && i===0) d.open=true;
+      var su=document.createElement('summary'); su.textContent=e.q; var pa=document.createElement('div'); pa.className='a'; pa.textContent=e.a;
+      d.appendChild(su); d.appendChild(pa); list.appendChild(d);
     });
-    list.innerHTML=html;
   }
-  chips.innerHTML='<button class="chip on" type="button" data-g="" aria-pressed="true">All</button>'+groups.map(function(g){return '<button class="chip" type="button" data-g="'+esc(g)+'" aria-pressed="false">'+esc(g)+'</button>';}).join('');
-  chips.addEventListener('click',function(ev){var b=ev.target.closest('.chip'); if(!b)return; active=b.getAttribute('data-g'); Array.prototype.forEach.call(chips.children,function(c){var on=c===b; c.classList.toggle('on',on); c.setAttribute('aria-pressed',on?'true':'false');}); render();});
-  q.addEventListener('input',render);
-  function open(){panel.classList.add('open'); fab.setAttribute('aria-expanded','true'); fab.textContent='Close'; setTimeout(function(){q.focus();},150);}
-  function close(){panel.classList.remove('open'); fab.setAttribute('aria-expanded','false'); fab.textContent='Ask Rana';}
-  function toggle(){panel.classList.contains('open')?close():open();}
-  fab.addEventListener('click',toggle);
-  document.getElementById('askclose').addEventListener('click',close);
-  document.getElementById('asknav').addEventListener('click',function(ev){ev.preventDefault();open();});
-  document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&panel.classList.contains('open'))close();});
-  document.addEventListener('click',function(ev){if(panel.classList.contains('open')&&!panel.contains(ev.target)&&!fab.contains(ev.target)&&!ev.target.closest('#asknav'))close();});
-  render();
+  ['All'].concat(order).forEach(function(g){
+    if(g!=='All' && !all.some(function(e){ return e.g===g; })) return;
+    var b=document.createElement('button'); b.type='button'; b.className='chip'+(g===active?' on':''); b.textContent=g; b.setAttribute('aria-pressed', g===active?'true':'false');
+    b.addEventListener('click',function(){ active=g; [].forEach.call(groups.children,function(c){ var on=c===b; c.classList.toggle('on',on); c.setAttribute('aria-pressed', on?'true':'false'); }); render(); });
+    groups.appendChild(b);
+  });
+  input.addEventListener('input',render);
+  function open(){ panel.classList.add('open'); fab.setAttribute('aria-expanded','true'); render(); input.focus(); }
+  function close(){ panel.classList.remove('open'); fab.setAttribute('aria-expanded','false'); fab.focus(); }
+  fab.addEventListener('click',function(){ panel.classList.contains('open') ? close() : open(); });
+  el('askclose').addEventListener('click',close);
+  el('asknav').addEventListener('click',function(e){ e.preventDefault(); open(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && panel.classList.contains('open')) close(); });
 })();
 </script>
 </body>
