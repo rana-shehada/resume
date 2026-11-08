@@ -69,7 +69,7 @@ window.ASK_RANA = [
    "heritage",
    "story"
   ],
-  "a": "I was raised in Egypt and I have Palestinian heritage, and I have worked in the Middle East, North Africa and the United States for more than twelve years. I hold a master's in Conflict Analysis and Resolution from the Carter School at George Mason University and a bachelor's in English Literature from Ain Shams University.",
+  "a": "I was raised in Egypt and I have Palestinian heritage, and I have worked in the Middle East, North Africa and the United States for more than twelve years. I hold a master's in Conflict Analysis and Resolution from the Carter School at George Mason University and a bachelor's in English Language and Literature from Ain Shams University.",
   "id": "what-is-your-background"
  },
  {
@@ -98,7 +98,7 @@ window.ASK_RANA = [
    "school",
    "studied"
   ],
-  "a": "M.S. in Conflict Analysis and Resolution, Carter School for Peace and Conflict Resolution, George Mason University. B.A. in English Literature, Ain Shams University, Cairo.",
+  "a": "M.S. in Conflict Analysis and Resolution, Carter School for Peace and Conflict Resolution, George Mason University. B.A. in English Language and Literature, Ain Shams University, Cairo.",
   "id": "what-is-your-education"
  },
  {
