@@ -207,7 +207,7 @@ window.ASK_RANA = [
    "breakout",
    "coach"
   ],
-  "a": "Yes. I onboard and brief co-facilitators and breakout leaders, set common standards, and run a short debrief after each session so quality stays consistent across rooms. I also design train-the-trainer components when a partner wants to keep delivering after I leave.",
+  "a": "Yes. I often co-facilitate, most recently an online mediation course with Dr. Amr Abdalla. I write the session materials so that whoever is in the room works from the same purpose and steps.",
   "id": "do-you-work-with-co-facilitators"
  },
  {
